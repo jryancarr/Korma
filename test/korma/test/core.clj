@@ -305,6 +305,14 @@
            (select user2))))
   (set-delimiters "\""))
 
+(deftest jdbc-options
+  (is (= {:fetch-size 1000}
+         (:jdbc-options (query-only (select users (fetch-size 1000))))))
+  (is (= {:max-rows 10}
+         (:jdbc-options (query-only (select users (max-rows 10))))))
+  (is (= {:fetch-size 1 :max-rows 2}
+         (:jdbc-options (query-only (select users (fetch-size 1) (max-rows 2)))))))
+
 (deftest naming-delim-options
   (sql-only
     (is (= "SELECT DELIMS.* FROM DELIMS"

@@ -210,11 +210,15 @@
       (jdbc/print-sql-exception e)))
   (throw e))
 
-(defn- exec-sql [{:keys [results sql-str params]}]
+(defn- exec-sql [{:keys [results sql-str params jdbc-options]}]
   (try
     (case results
-      :results (jdbc/with-query-results rs (apply vector sql-str params)
-                 (vec rs))
+      :results (jdbc/with-query-results
+                  rs
+                  (if jdbc-options
+                    (apply vector jdbc-options sql-str params)
+                    (apply vector sql-str params))
+                  (vec rs))
       :keys (jdbc/do-prepared-return-keys sql-str params)
       (jdbc/do-prepared sql-str params))
     (catch Exception e

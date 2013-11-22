@@ -395,6 +395,26 @@
   [s]
   (utils/generated s))
 
+(defn fetch-size
+  "Sets the JDBC fetch size for this query, i.e. the number of rows pulled back
+  with each round trip to the server. Fetch size defaults to 10 on most drivers.
+  This option will not affect which rows are returned, but if you are running
+  big queries then turning fetch size up (e.g. to 1000) can make them finish much faster.
+
+  (select users
+    (fetch-size 1000))"
+  [query fs]
+  (assoc-in query [:jdbc-options :fetch-size] fs))
+
+(defn max-rows
+  "Sets the JDBC max rows option. Useful as an alternative to (limit) for DBMSs that do
+  not support LIMIT (e.g. Oracle).
+
+  (select users
+    (max-rows 10))"
+  [query mr]
+  (assoc-in query [:jdbc-options :max-rows] mr))
+
 ;;*****************************************************
 ;; Query exec
 ;;*****************************************************
